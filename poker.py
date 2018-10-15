@@ -2,27 +2,34 @@ from Card import Card
 from collections import defaultdict
 import json
 
+# Overall Poker hand rankings. Min is better hand.
 rankings = { "Royal Flush": 1, "Straight Flush": 2, "Four of a Kind": 3, "Full House": 4,
              "Flush": 5, "Straight":6, "Three of a Kind": 7, "Two Pair": 8, "One Pair": 9, "High Card": 10}
+
+# Holds Poker hands passed
 hands = []
+# Holds results of Poker hands
 results = []
 
 def main():
+    # Pre-define a JSON poker hand
     hand = json.loads( "[\"JH\", \"4C\", \"4S\", \"JC\", \"9H\"]" )
+
     # Call implementation function #1
     print("\nUsing hand: {}".format(hand))
-    print( "\n...You have a {}\n".format( one(hand) ) )
+    print( "\n...You have a {}.\n".format( one(hand) ) )
 
-    # Aks user for poker hand input -> convert JSON to list
-    hand = json.loads( input("Enter poker hand in JSON format: ") )
+    # Aks user for poker hand input -> convert JSON , add to list
+    hand = json.loads( input("Enter poker hand in [JSON format]: ") )
     hands.append(hand)
-    hand = json.loads( input("Enter poker hand in JSON format: ") )
+    hand = json.loads( input("Enter poker hand in [JSON format]: ") )
     hands.append(hand)
 
     # Call implementation function #2
     two()
 
 def one(hand):
+    """First implementation where category of 5-card is determined"""
     cards = []  # list of card objects
     ranks = defaultdict(int)  # dictionary of rank counts
     suits = defaultdict(int)  # dictionary of suit counts
@@ -88,7 +95,7 @@ def two():
         if rankings[h] < rank:
             rank = rankings[h]  # set new rank to compare against for next iter
             winner = h
-    print("\nWinning hand is {}\n".format(winner))
+    print("\nWinning hand is {}.\n".format(winner))
     return winner
 
 #--------------------------------------------------------------------------------
