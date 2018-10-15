@@ -28,6 +28,10 @@ def main():
     # Call implementation function #2
     two()
 
+    # Call implementation function #3
+    hand = json.loads( input("Enter poker hand in [JSON format]: ") )
+    three(hand)
+
 def one(hand):
     """First implementation where category of 5-card is determined"""
     cards = []  # list of card objects
@@ -98,6 +102,8 @@ def two():
     print("\nWinning hand is {}.\n".format(winner))
     return winner
 
+def three(hand):
+    pass
 #--------------------------------------------------------------------------------
 # Helper functions
 

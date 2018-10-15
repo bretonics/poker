@@ -15,9 +15,9 @@ Example
 
     Using hand: ['JH', '4C', '4S', 'JC', '9H']
 
-    ...You have a Two Pair
+    ...You have a Two Pair.
 
     Enter poker hand in JSON format: ["7H", "7C", "5S", "5C", "7H"]
     Enter poker hand in JSON format: ["9C", "7C", "5C", "6C", "10C"]
 
-    Winning hand is Full House
+    Winning hand is Full House.
