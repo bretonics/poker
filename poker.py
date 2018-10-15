@@ -27,10 +27,6 @@ def one():
             ranks[c.rank] += 1
             suits[c.suit] += 1
 
-        print(ranks)
-        print(suits)
-
-
         #--------------------------------------------------
         # Hands deailing with suits
         if isRoyal(ranks) and isFlush(suits):
@@ -87,12 +83,12 @@ def one():
 def highCard(ranks):
     """Get highest card rank"""
     highest = ""
-    try:  # Check if ranks are numbers
+    if numeric(ranks):  # Check if ranks are numbers
         r = [eval(i) for i in ranks.keys()]
         highest = max(r)
         print("High card! Rank {}".format(highest))
         return highest
-    except:
+    else:
         # Get highes non-numeric card rank
         if "A" in ranks:
             highest = "A"
@@ -122,7 +118,7 @@ def isXOK(ranks, n):
 def isStraight(ranks):
     """Check if sequence of ranks is a straight"""
 
-    try:  # Check if ranks are numbers
+    if numeric(ranks):  # Check if ranks are numbers
         r = [eval(i) for i in ranks.keys()]
 
         # Iterate through sorted list +1 each step.
@@ -136,7 +132,7 @@ def isStraight(ranks):
             else:
                 return False
         return True
-    except:  # Rank is non-numeric cards (J, Q, K, A) or contains mix numeric/non-numeric
+    else:  # Rank is non-numeric cards (J, Q, K, A) or contains mix numeric/non-numeric
     # TODO: check edge cases of numeric and non-numeric straights
         if isRoyal(ranks):  # Straight is royal
             return True
@@ -165,6 +161,13 @@ def isRoyal(ranks):
                     if "10" in ranks:
                         return True
 
+def numeric(ranks):
+    """Check if ranks are numbers"""
+    try:
+        r = [eval(i) for i in ranks.keys()]
+        return True
+    except:
+        return False
 
 
 main() # Call the main function
