@@ -2,20 +2,24 @@ from Card import Card
 from collections import defaultdict
 import json
 
-rankings = { "RoFl": 1, "StrFl": 2, "FoK": 3, "FHouse": 4, "Fl": 5, "Str":6, "ToK": 7, "TPair": 8, "OPair": 9, "HC": 10}
+rankings = { "Royal Flush": 1, "Straight Flush": 2, "Four of a Kind": 3, "Full House": 4,
+             "Flush": 5, "Straight":6, "Three of a Kind": 7, "Two Pair": 8, "One Pair": 9, "High Card": 10}
 hands = []
 results = []
 
 def main():
-    # hand = json.loads( "[\"JH\", \"4C\", \"4S\", \"JC\", \"9H\"]" )
+    hand = json.loads( "[\"JH\", \"4C\", \"4S\", \"JC\", \"9H\"]" )
+    # Call implementation function #1
+    print("\nUsing hand: {}".format(hand))
+    print( "\n...You have a {}\n".format( one(hand) ) )
+
     # Aks user for poker hand input -> convert JSON to list
     hand = json.loads( input("Enter poker hand in JSON format: ") )
     hands.append(hand)
     hand = json.loads( input("Enter poker hand in JSON format: ") )
     hands.append(hand)
 
-    # Call implementation functions
-    one(hand)
+    # Call implementation function #2
     two()
 
 def one(hand):
@@ -35,48 +39,40 @@ def one(hand):
     # Hands deailing with suits
     if isRoyal(ranks) and isFlush(suits):
         print("Winner! Winner! Chicken Dinner!")
-        return "RoFl"
+        return "Royal Flush"
 
     if isStraight(ranks) and isFlush(suits):
-        print("Straight Flush!")
-        return "StrFl"
+        return "Straight Flush"
 
     if isFlush(suits):
-        print("Flush!")
-        return "Fl"
+        return "Flush"
 
     #--------------------------------------------------
     # Hands dealing with ranks
     if isStraight(ranks):
-        print("Straight!")
-        return "Str"
+        return "Straight"
 
     if isXOK(ranks, 4):
-        print("Four of a kind!")
-        return "FoK"
+        return "Four of a Kind"
 
     if hasPair(ranks):
         pairs = hasPair(ranks)
         if len(pairs) == 1:
             if isXOK(ranks, 3):
-                print("Full house!")
-                return "FHouse"
+                return "Full House"
             else:
-                print("One pair!")
-                return "OPair"
+                return "One Pair"
         if len(pairs) == 2:
-            print("Two pair!")
-            return "TPair"
+            return "Two Pair"
 
     if isXOK(ranks, 3):
-        print("Three of a kind!")
-        return "ToK"
+        return "Three of a Kind"
 
-    highCard(ranks)
+    return( highCard(ranks) )
 
 def two():
     """Determine winner between 2 5-card hands"""
-    # track hands dealt
+    # Track hands dealt
     results = []
     # Check each hand dealt (passed)
     for hand in hands:
@@ -85,11 +81,14 @@ def two():
 
     rank = 11
     winner = ""
+    # Loop through results and check rankings for value
     for h in results:
+        # If current hand's ranking value is less than current rank
+        # set as new winner
         if rankings[h] < rank:
-            rank = rankings[h]
+            rank = rankings[h]  # set new rank to compare against for next iter
             winner = h
-    print("Winning hand is {}".format(winner))
+    print("\nWinning hand is {}\n".format(winner))
     return winner
 
 #--------------------------------------------------------------------------------
@@ -101,8 +100,6 @@ def highCard(ranks):
     if numeric(ranks):  # Check if ranks are numbers
         r = [eval(i) for i in ranks.keys()]
         highest = max(r)
-        print("High card! Rank {}".format(highest))
-        return "HC"
     else:
         # Get highes non-numeric card rank
         if "A" in ranks:
@@ -114,8 +111,9 @@ def highCard(ranks):
         if "J" in ranks:
             highest = "J"
 
-        print("Highest card! Rank {}".format(highest))
-        return "HC"
+
+    return "High Card"
+
 
 
 def hasPair(ranks):
