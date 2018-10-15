@@ -84,23 +84,25 @@ def one(hand):
 def two():
     """Determine winner between 2 5-card hands"""
     # Track hands dealt
-    results = []
+    results = {}
     # Check each hand dealt (passed)
     for hand in hands:
         result = one(hand)
-        results.append(result)
+        results[result] = hand
 
     rank = 11
     winner = ""
+    winningHand = ""
     # Loop through results and check rankings for value
-    for h in results:
+    for res, hand in results.items():
         # If current hand's ranking value is less than current rank
         # set as new winner
-        if rankings[h] < rank:
-            rank = rankings[h]  # set new rank to compare against for next iter
-            winner = h
-    print("\nWinning hand is {}.\n".format(winner))
-    return winner
+        if rankings[res] < rank:
+            rank = rankings[res]  # set new rank to compare against for next iter
+            winner = res
+            winningHand = hand
+    print("\nWinning hand is {}: {}.\n".format(winner, winningHand))
+    return winningHand
 
 def three(hand):
     pass
