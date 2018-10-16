@@ -12,6 +12,8 @@ hands = []
 results = []
 
 def main():
+    """Main function asking user for input and calling 3 different functions"""
+
     # Pre-define a JSON poker hand
     hand = json.loads( "[\"JH\", \"4C\", \"4S\", \"JC\", \"9H\"]" )
 
@@ -24,14 +26,17 @@ def main():
     hand = []  # reset hand
     while len(hand) != 5:
         hand = json.loads( input("\nEnter your 5-card poker hand in [JSON format]: ") )
+
+    # Use function #1
     one(hand)
+
 
     # Call implementation function #2
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
     print("Let's play another round.\n")
     print("Who will the winner be? Enter your hands...")
 
-
+    # Ask user for 2 poker hands
     for x in ["first", "second"]:
         hand = []  # reset hand
         # Make sure hand entered has 5 cards
@@ -39,13 +44,18 @@ def main():
             # Aks user for poker hand input -> convert JSON , add to list
             hand = json.loads( input("\nEnter {} 5-card poker hand in [JSON format]: ".format(x)) )
         hands.append(hand)
+
+    # Use function #2
     two()
+
 
     # Call implementation function #3
     # Make sure hand entered has more than 5 cards
     hand = []  # reset hand
     while len(hand) <= 5:
         hand = json.loads( input("Enter poker hand with more than 5 cards in [JSON format]: ") )
+
+    # Use function #3
     three(hand)
 
 #--------------------------------------------------------------------------------
