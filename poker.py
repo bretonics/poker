@@ -15,17 +15,22 @@ def main():
     # Pre-define a JSON poker hand
     hand = json.loads( "[\"JH\", \"4C\", \"4S\", \"JC\", \"9H\"]" )
 
-    # Call implementation function #1
+    # Call implementation function #1 using pre-defined hand
     print("\nUsing hand: {}".format(hand))
     print( "\n...You have a {}.\n".format( one(hand) ) )
 
+    # Call implementation function #1 using hand entered from user
+    hand = json.loads( input("Enter you poker hand in [JSON format]: ") )
+    print( "\n...You have a {}.\n".format( one(hand) ) )
+
+    # Call implementation function #2
+    print("\nLet's play another round.")
+    print("Who will the winner be? Enter your hands...\n")
     # Aks user for poker hand input -> convert JSON , add to list
     hand = json.loads( input("Enter poker hand in [JSON format]: ") )
     hands.append(hand)
     hand = json.loads( input("Enter poker hand in [JSON format]: ") )
     hands.append(hand)
-
-    # Call implementation function #2
     two()
 
     # Call implementation function #3
@@ -105,6 +110,7 @@ def two():
     return winningHand
 
 def three(hand):
+    """Return best 5-card hand"""
     pass
 #--------------------------------------------------------------------------------
 # Helper functions
@@ -126,10 +132,7 @@ def highCard(ranks):
         if "J" in ranks:
             highest = "J"
 
-
     return "High Card"
-
-
 
 def hasPair(ranks):
     """Check if pairs of cards present"""
@@ -167,7 +170,6 @@ def isStraight(ranks):
         if isRoyal(ranks):  # Straight is royal
             return True
         else:  # Check if straight has both numeric and non-numeric
-
             if "10" in ranks:
                 if "J" in ranks:  # going up
                     pass
