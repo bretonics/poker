@@ -40,6 +40,8 @@ def main():
     hand = json.loads( input("Enter poker hand in [JSON format]: ") )
     three(hand)
 
+#--------------------------------------------------------------------------------
+# implementation Functions
 def one(hand):
     """First implementation where category of 5-card is determined"""
     cards = []  # list of card objects
@@ -58,36 +60,38 @@ def one(hand):
     # Hands deailing with suits
     if isRoyal(ranks) and isFlush(suits):
         print("Winner! Winner! Chicken Dinner!")
-        return {"name": "Royal Flush", "hand": hand}
+        return {"name": "Royal Flush", "hand": hand, "kicker": None}
 
     if isStraight(ranks) and isFlush(suits):
-        return {"name": "Straight Flush", "hand": hand}
+        return {"name": "Straight Flush", "hand": hand, "kicker": None}
 
     if isFlush(suits):
-        return {"name": "Flush", "hand": hand}
+        return {"name": "Flush", "hand": hand, "kicker": None}
 
     #--------------------------------------------------
     # Hands dealing with ranks
     if isStraight(ranks):
-        return {"name": "Straight", "hand": hand}
+        return {"name": "Straight", "hand": hand, "kicker": None}
 
     if isXOK(ranks, 4):
-        return {"name": "Four of a Kind", "hand": hand}
+        return {"name": "Four of a Kind", "hand": hand, "kicker": None}
 
     if hasPair(ranks):
         pairs = hasPair(ranks)
         if len(pairs) == 1:
             if isXOK(ranks, 3):
-                return {"name": "Full House", "hand": hand}
+                return {"name": "Full House", "hand": hand, "kicker": None}
             else:
-                return {"name": "One Pair", "hand": hand}
+                remaining = [x for x in pairs if not x.startswith(pairs[0])]
+                return {"name": "One Pair", "hand": hand, "kicker": None, "kicker": None}
         if len(pairs) == 2:
-            return {"name": "Two Pair", "hand": hand}
+            remaining = [x for x in pairs if not x.startswith(pairs[0]) and not x.startswith(pairs[1])]
+            return {"name": "Two Pair", "hand": hand, "kicker": None, "kicker": remaining[0]}
 
     if isXOK(ranks, 3):
-        return {"name": "Three of a Kind", "hand": hand}
+        return {"name": "Three of a Kind", "hand": hand, "kicker": None}
 
-    return( {"name":  highCard(ranks), "hand": hand} )
+    return( {"name":  highCard(ranks), "hand": hand, "kicker": None} )
 
 def two():
     """Determine winner between 2 5-card hands"""
