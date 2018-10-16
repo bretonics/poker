@@ -17,14 +17,17 @@ def main():
 
     # Call implementation function #1 using pre-defined hand
     print("\nUsing hand: {}".format(hand))
-    print( "\n...You have a {}.\n".format( one(hand) ) )
+    result = one(hand)
+    print( "\n...You have a {}.\n".format( result["name"] ) )
 
     # Call implementation function #1 using hand entered from user
     hand = json.loads( input("Enter you poker hand in [JSON format]: ") )
-    print( "\n...You have a {}.\n".format( one(hand) ) )
+    result = one(hand)
+    print( "\n...You have a {}.\n".format( result["name"] ) )
 
     # Call implementation function #2
-    print("\nLet's play another round.")
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+    print("Let's play another round.\n")
     print("Who will the winner be? Enter your hands...\n")
     # Aks user for poker hand input -> convert JSON , add to list
     hand = json.loads( input("Enter poker hand in [JSON format]: ") )
@@ -55,36 +58,36 @@ def one(hand):
     # Hands deailing with suits
     if isRoyal(ranks) and isFlush(suits):
         print("Winner! Winner! Chicken Dinner!")
-        return "Royal Flush"
+        return {"name": "Royal Flush", "hand": hand}
 
     if isStraight(ranks) and isFlush(suits):
-        return "Straight Flush"
+        return {"name": "Straight Flush", "hand": hand}
 
     if isFlush(suits):
-        return "Flush"
+        return {"name": "Flush", "hand": hand}
 
     #--------------------------------------------------
     # Hands dealing with ranks
     if isStraight(ranks):
-        return "Straight"
+        return {"name": "Straight", "hand": hand}
 
     if isXOK(ranks, 4):
-        return "Four of a Kind"
+        return {"name": "Four of a Kind", "hand": hand}
 
     if hasPair(ranks):
         pairs = hasPair(ranks)
         if len(pairs) == 1:
             if isXOK(ranks, 3):
-                return "Full House"
+                return {"name": "Full House", "hand": hand}
             else:
-                return "One Pair"
+                return {"name": "One Pair", "hand": hand}
         if len(pairs) == 2:
-            return "Two Pair"
+            return {"name": "Two Pair", "hand": hand}
 
     if isXOK(ranks, 3):
-        return "Three of a Kind"
+        return {"name": "Three of a Kind", "hand": hand}
 
-    return( highCard(ranks) )
+    return( {"name":  highCard(ranks), "hand": hand} )
 
 def two():
     """Determine winner between 2 5-card hands"""
@@ -92,8 +95,9 @@ def two():
     results = {}
     # Check each hand dealt (passed)
     for hand in hands:
+        # Returned result is dictionary of name:hand (key:value) pair
         result = one(hand)
-        results[result] = hand
+        results[result["name"]] = hand
 
     rank = 11
     winner = ""
