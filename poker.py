@@ -23,20 +23,20 @@ def main():
     hand = json.loads( input("\nEnter you poker hand in [JSON format]: ") )
     one(hand)
 
-    # # Call implementation function #2
-    # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
-    # print("Let's play another round.\n")
-    # print("Who will the winner be? Enter your hands...\n")
-    # # Aks user for poker hand input -> convert JSON , add to list
-    # hand = json.loads( input("\nEnter poker hand in [JSON format]: ") )
-    # hands.append(hand)
-    # hand = json.loads( input("\nEnter poker hand in [JSON format]: ") )
-    # hands.append(hand)
-    # two()
-    #
-    # # Call implementation function #3
-    # hand = json.loads( input("Enter poker hand in [JSON format]: ") )
-    # three(hand)
+    # Call implementation function #2
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+    print("Let's play another round.\n")
+    print("Who will the winner be? Enter your hands...\n")
+    # Aks user for poker hand input -> convert JSON , add to list
+    hand = json.loads( input("\nEnter poker hand in [JSON format]: ") )
+    hands.append(hand)
+    hand = json.loads( input("\nEnter poker hand in [JSON format]: ") )
+    hands.append(hand)
+    two()
+
+    # Call implementation function #3
+    hand = json.loads( input("Enter poker hand in [JSON format]: ") )
+    three(hand)
 
 #--------------------------------------------------------------------------------
 # implementation Functions
@@ -88,7 +88,10 @@ def one(hand):
 
     # Four of a kind
     if isXOK(ranks, 4):
-        result = {"name": "Four of a Kind", "hand": hand, "value": None, "kicker": None}
+        n = isXOK(ranks, 4)
+        # Get other cards not in pair to get kicker
+        remaining = remainingCards(ranks, n[0])
+        result = {"name": "Four of a Kind", "hand": hand, "value": None, "kicker": kicker(remaining)}
         message(result)
         return result
 
@@ -106,7 +109,7 @@ def one(hand):
             # One pair
             else:
                 # Get other cards not in pair to get kicker
-                remaining = [x for x in ranks.keys() if not x.startswith(pairs[0])]
+                remaining = remainingCards(ranks, pairs[0])
                 result = {"name": "One Pair", "hand": hand, "value": None, "kicker": kicker(remaining)}
                 message(result)
                 return result
@@ -114,8 +117,8 @@ def one(hand):
         # Two pair
         if len(pairs) == 2:
             # Get other cards not in pair to get kicker
-            remaining = [x for x in ranks.keys() if not x.startswith(pairs[0]) and not x.startswith(pairs[1])]
-            result = {"name": "Two Pair", "hand": hand, "value": None, "kicker": remaining}
+            remaining = remainingCards(ranks, pairs[1])
+            result = {"name": "Two Pair", "hand": hand, "value": None, "kicker": kicker(remaining)}
             message(result)
             return result
 
@@ -123,8 +126,7 @@ def one(hand):
     if isXOK(ranks, 3):
         n = isXOK(ranks, 3)
         # Get other cards not in pair to get kicker
-        remaining = [x for x in ranks.keys() if not x.startswith(n[0])]
-        print(remaining)
+        remaining = remainingCards(ranks, n[0])
 
         result = {"name": "Three of a Kind", "hand": hand, "value": None, "kicker": kicker(remaining)}
         message(result)
@@ -162,9 +164,19 @@ def two():
     print("\nWinning hand is {}: {}.\n".format(winner, winningHand))
     return winningHand
 
+
 def three(hand):
     """Return best 5-card hand"""
-    pass
+
+    # # Create list of Card objects
+    # for card in hand:
+    #     c = Card(card)
+    #     cards.append(c)
+    #     # Keep track of counts for each rank/suit observed, increment in dictionary
+    #     ranks[c.rank] += 1
+    #     suits[c.suit] += 1
+
+    one(hand)
 #--------------------------------------------------------------------------------
 # Helper functions
 
@@ -274,7 +286,11 @@ def numeric(ranks):
     except:
         return False
 
+def remainingCards(ranks, n):
+    return [x for x in ranks.keys() if not x.startswith(n)]
+
 def message(result):
+    """Prints user a message with poker hand"""
     name = result["name"]
     hand = result["hand"]
     kicker = result["kicker"]
