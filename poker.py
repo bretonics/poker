@@ -61,19 +61,19 @@ def one(hand):
     # Royal Flush
     if isRoyal(ranks) and isFlush(suits):
         print("\nWinner! Winner! Chicken Dinner!")
-        result = {"name": "Royal Flush", "hand": hand, "kicker": None}
+        result = {"name": "Royal Flush", "hand": hand, "value": None, "kicker": None}
         message(result)
         return result
 
     # Straight flush
     if isStraight(ranks) and isFlush(suits):
-        result =  {"name": "Straight Flush", "hand": hand, "kicker": None}
+        result =  {"name": "Straight Flush", "hand": hand, "value": None, "kicker": None}
         message(result)
         return result
 
     # Flush
     if isFlush(suits):
-        result = {"name": "Flush", "hand": hand, "kicker": None}
+        result = {"name": "Flush", "hand": hand, "value": None, "kicker": None}
         message(result)
         return result
 
@@ -82,13 +82,13 @@ def one(hand):
 
     # Straight
     if isStraight(ranks):
-        result = {"name": "Straight", "hand": hand, "kicker": None}
+        result = {"name": "Straight", "hand": hand, "value": None, "kicker": None}
         message(result)
         return result
 
     # Four of a kind
     if isXOK(ranks, 4):
-        result = {"name": "Four of a Kind", "hand": hand, "kicker": None}
+        result = {"name": "Four of a Kind", "hand": hand, "value": None, "kicker": None}
         message(result)
         return result
 
@@ -99,7 +99,7 @@ def one(hand):
 
             # Full house
             if isXOK(ranks, 3):
-                result = {"name": "Full House", "hand": hand, "kicker": None}
+                result = {"name": "Full House", "hand": hand, "value": None, "kicker": None}
                 message(result)
                 return result
 
@@ -107,7 +107,7 @@ def one(hand):
             else:
                 # Get other cards not in pair to get kicker
                 remaining = [x for x in ranks.keys() if not x.startswith(pairs[0])]
-                result = {"name": "One Pair", "hand": hand, "kicker": None, "kicker": kicker(remaining)}
+                result = {"name": "One Pair", "hand": hand, "value": None, "kicker": kicker(remaining)}
                 message(result)
                 return result
 
@@ -115,7 +115,7 @@ def one(hand):
         if len(pairs) == 2:
             # Get other cards not in pair to get kicker
             remaining = [x for x in ranks.keys() if not x.startswith(pairs[0]) and not x.startswith(pairs[1])]
-            result = {"name": "Two Pair", "hand": hand, "kicker": None, "kicker": remaining}
+            result = {"name": "Two Pair", "hand": hand, "value": None, "kicker": remaining}
             message(result)
             return result
 
@@ -126,7 +126,7 @@ def one(hand):
         remaining = [x for x in ranks.keys() if not x.startswith(n[0])]
         print(remaining)
 
-        result = {"name": "Three of a Kind", "hand": hand, "kicker": kicker(remaining)}
+        result = {"name": "Three of a Kind", "hand": hand, "value": None, "kicker": kicker(remaining)}
         message(result)
         return result
 
@@ -185,7 +185,7 @@ def highCard(ranks):
         if "J" in ranks:
             highest = "J"
 
-    return {"name": "High Card", "value": highest}
+    return {"name": "High Card", "value": highest, "kicker": None}
 
 def kicker(remaining):
     """Get kicker card rank"""
@@ -278,6 +278,7 @@ def message(result):
     name = result["name"]
     hand = result["hand"]
     kicker = result["kicker"]
+    value = result["value"]
 
     # Print hand
     print("\nYou have a {}!\n".format(name), end="")
@@ -285,7 +286,9 @@ def message(result):
     # Append kicker if present
     if kicker is not None:
         print("Kicker: {}".format(kicker) )
+    elif value is not None:
+        print("Value: {}".format(value) )
     else:
-        print("")  # append new line return carriage
+        print("")  # append return carriage
 
 main() # Call the main function
