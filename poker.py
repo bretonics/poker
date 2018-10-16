@@ -20,22 +20,32 @@ def main():
     one(hand)
 
     # Call implementation function #1 using hand entered from user
-    hand = json.loads( input("\nEnter you poker hand in [JSON format]: ") )
+    # Make sure hand entered has 5 cards
+    hand = []  # reset hand
+    while len(hand) != 5:
+        hand = json.loads( input("\nEnter your 5-card poker hand in [JSON format]: ") )
     one(hand)
 
     # Call implementation function #2
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
     print("Let's play another round.\n")
-    print("Who will the winner be? Enter your hands...\n")
-    # Aks user for poker hand input -> convert JSON , add to list
-    hand = json.loads( input("\nEnter poker hand in [JSON format]: ") )
-    hands.append(hand)
-    hand = json.loads( input("\nEnter poker hand in [JSON format]: ") )
-    hands.append(hand)
+    print("Who will the winner be? Enter your hands...")
+
+
+    for x in ["first", "second"]:
+        hand = []  # reset hand
+        # Make sure hand entered has 5 cards
+        while len(hand) != 5:
+            # Aks user for poker hand input -> convert JSON , add to list
+            hand = json.loads( input("\nEnter {} 5-card poker hand in [JSON format]: ".format(x)) )
+        hands.append(hand)
     two()
 
     # Call implementation function #3
-    hand = json.loads( input("Enter poker hand in [JSON format]: ") )
+    # Make sure hand entered has more than 5 cards
+    hand = []  # reset hand
+    while len(hand) <= 5:
+        hand = json.loads( input("Enter poker hand with more than 5 cards in [JSON format]: ") )
     three(hand)
 
 #--------------------------------------------------------------------------------
@@ -118,7 +128,7 @@ def one(hand):
         if len(pairs) == 2:
             # Get other cards not in pair to get kicker
             remaining = remainingCards(ranks, pairs[1])
-            result = {"name": "Two Pair", "hand": hand, "value": None, "kicker": kicker(remaining)}
+            result = {"name": "Two Pair", "hand": hand, "value": None, "kicker": remaining[0]}
             message(result)
             return result
 
@@ -187,15 +197,15 @@ def highCard(ranks):
         r = [eval(i) for i in ranks.keys()]
         highest = max(r)
     else:
-        # Get highes non-numeric card rank
-        if "A" in ranks:
-            highest = "A"
-        if "K" in ranks:
-            highest = "K"
-        if "Q" in ranks:
-            highest = "Q"
+        # Get highest non-numeric card rank, order counts
         if "J" in ranks:
             highest = "J"
+        if "Q" in ranks:
+            highest = "Q"
+        if "K" in ranks:
+            highest = "K"
+        if "A" in ranks:
+            highest = "A"
 
     return {"name": "High Card", "value": highest, "kicker": None}
 
@@ -206,15 +216,15 @@ def kicker(remaining):
         r = [eval(i) for i in remaining]
         highest = max(r)
     except:
-        # Get highes non-numeric card rank
-        if "A" in remaining:
-            highest = "A"
-        if "K" in remaining:
-            highest = "K"
-        if "Q" in remaining:
-            highest = "Q"
+        # Get highest non-numeric card rank, order counts
         if "J" in remaining:
             highest = "J"
+        if "Q" in remaining:
+            highest = "Q"
+        if "K" in remaining:
+            highest = "K"
+        if "A" in remaining:
+            highest = "A"
 
     return highest
 
