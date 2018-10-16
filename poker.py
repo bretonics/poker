@@ -20,23 +20,23 @@ def main():
     one(hand)
 
     # Call implementation function #1 using hand entered from user
-    hand = json.loads( input("Enter you poker hand in [JSON format]: ") )
+    hand = json.loads( input("\nEnter you poker hand in [JSON format]: ") )
     one(hand)
 
-    # Call implementation function #2
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
-    print("Let's play another round.\n")
-    print("Who will the winner be? Enter your hands...\n")
-    # Aks user for poker hand input -> convert JSON , add to list
-    hand = json.loads( input("Enter poker hand in [JSON format]: ") )
-    hands.append(hand)
-    hand = json.loads( input("Enter poker hand in [JSON format]: ") )
-    hands.append(hand)
-    two()
-
-    # Call implementation function #3
-    hand = json.loads( input("Enter poker hand in [JSON format]: ") )
-    three(hand)
+    # # Call implementation function #2
+    # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+    # print("Let's play another round.\n")
+    # print("Who will the winner be? Enter your hands...\n")
+    # # Aks user for poker hand input -> convert JSON , add to list
+    # hand = json.loads( input("\nEnter poker hand in [JSON format]: ") )
+    # hands.append(hand)
+    # hand = json.loads( input("\nEnter poker hand in [JSON format]: ") )
+    # hands.append(hand)
+    # two()
+    #
+    # # Call implementation function #3
+    # hand = json.loads( input("Enter poker hand in [JSON format]: ") )
+    # three(hand)
 
 #--------------------------------------------------------------------------------
 # implementation Functions
@@ -62,14 +62,20 @@ def one(hand):
     if isRoyal(ranks) and isFlush(suits):
         print("\nWinner! Winner! Chicken Dinner!")
         result = {"name": "Royal Flush", "hand": hand, "kicker": None}
+        message(result)
+        return result
 
     # Straight flush
     if isStraight(ranks) and isFlush(suits):
         result =  {"name": "Straight Flush", "hand": hand, "kicker": None}
+        message(result)
+        return result
 
     # Flush
     if isFlush(suits):
         result = {"name": "Flush", "hand": hand, "kicker": None}
+        message(result)
+        return result
 
     #--------------------------------------------------
     # Hands dealing with ranks
@@ -77,34 +83,60 @@ def one(hand):
     # Straight
     if isStraight(ranks):
         result = {"name": "Straight", "hand": hand, "kicker": None}
+        message(result)
+        return result
 
     # Four of a kind
     if isXOK(ranks, 4):
         result = {"name": "Four of a Kind", "hand": hand, "kicker": None}
+        message(result)
+        return result
 
     # Pairs
     if hasPair(ranks):
         pairs = hasPair(ranks)
         if len(pairs) == 1:
+
+            # Full house
             if isXOK(ranks, 3):
                 result = {"name": "Full House", "hand": hand, "kicker": None}
+                message(result)
+                return result
+
+            # One pair
             else:
-                # remaining = [x for x in pairs if not x.startswith(pairs[0])]
-                result = {"name": "One Pair", "hand": hand, "kicker": None, "kicker": None}
+                # Get other cards not in pair to get kicker
+                remaining = [x for x in ranks.keys() if not x.startswith(pairs[0])]
+                result = {"name": "One Pair", "hand": hand, "kicker": None, "kicker": kicker(remaining)}
+                message(result)
+                return result
+
+        # Two pair
         if len(pairs) == 2:
-            # remaining = [x for x in pairs if not x.startswith(pairs[0]) and not x.startswith(pairs[1])]
-            result = {"name": "Two Pair", "hand": hand, "kicker": None, "kicker": None}
+            # Get other cards not in pair to get kicker
+            remaining = [x for x in ranks.keys() if not x.startswith(pairs[0]) and not x.startswith(pairs[1])]
+            result = {"name": "Two Pair", "hand": hand, "kicker": None, "kicker": remaining}
+            message(result)
+            return result
 
     # Three of a kind
     if isXOK(ranks, 3):
-        result = {"name": "Three of a Kind", "hand": hand, "kicker": None}
+        n = isXOK(ranks, 3)
+        # Get other cards not in pair to get kicker
+        remaining = [x for x in ranks.keys() if not x.startswith(n[0])]
+        print(remaining)
+
+        result = {"name": "Three of a Kind", "hand": hand, "kicker": kicker(remaining)}
+        message(result)
+        return result
 
     # High Card
     if not bool(result):
-        result = {"name":  highCard(ranks), "hand": hand, "kicker": None}
+        result = highCard(ranks)
+        result["hand"] = hand
+        message(result)
+        return result
 
-    message(result)
-    return result
 
 def two():
     """Determine winner between 2 5-card hands"""
@@ -153,7 +185,26 @@ def highCard(ranks):
         if "J" in ranks:
             highest = "J"
 
-    return "High Card"
+    return {"name": "High Card", "value": highest}
+
+def kicker(remaining):
+    """Get kicker card rank"""
+    highest = ""
+    try:  # Check if ranks are numbers
+        r = [eval(i) for i in remaining]
+        highest = max(r)
+    except:
+        # Get highes non-numeric card rank
+        if "A" in remaining:
+            highest = "A"
+        if "K" in remaining:
+            highest = "K"
+        if "Q" in remaining:
+            highest = "Q"
+        if "J" in remaining:
+            highest = "J"
+
+    return highest
 
 def hasPair(ranks):
     """Check if pairs of cards present"""
@@ -165,7 +216,8 @@ def hasPair(ranks):
 def isXOK(ranks, n):
     """Check for n number of cards in hand"""
     if n in ranks.values():
-        return True
+        # Return card rank that is present "n" times
+        return [k for k,v in ranks.items() if v == n]
     else:
         return False
 
@@ -228,7 +280,7 @@ def message(result):
     kicker = result["kicker"]
 
     # Print hand
-    print("\n...You have a {}!\n".format(name), end="")
+    print("\nYou have a {}!\n".format(name), end="")
 
     # Append kicker if present
     if kicker is not None:
