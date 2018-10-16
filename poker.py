@@ -17,13 +17,11 @@ def main():
 
     # Call implementation function #1 using pre-defined hand
     print("\nUsing hand: {}".format(hand))
-    result = one(hand)
-    print( "\n...You have a {}.\n".format( result["name"] ) )
+    one(hand)
 
     # Call implementation function #1 using hand entered from user
     hand = json.loads( input("Enter you poker hand in [JSON format]: ") )
-    result = one(hand)
-    print( "\n...You have a {}.\n".format( result["name"] ) )
+    one(hand)
 
     # Call implementation function #2
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
@@ -47,6 +45,7 @@ def one(hand):
     cards = []  # list of card objects
     ranks = defaultdict(int)  # dictionary of rank counts
     suits = defaultdict(int)  # dictionary of suit counts
+    result = {}
 
     # Create list of Card objects
     for card in hand:
@@ -58,40 +57,54 @@ def one(hand):
 
     #--------------------------------------------------
     # Hands deailing with suits
+
+    # Royal Flush
     if isRoyal(ranks) and isFlush(suits):
-        print("Winner! Winner! Chicken Dinner!")
-        return {"name": "Royal Flush", "hand": hand, "kicker": None}
+        print("\nWinner! Winner! Chicken Dinner!")
+        result = {"name": "Royal Flush", "hand": hand, "kicker": None}
 
+    # Straight flush
     if isStraight(ranks) and isFlush(suits):
-        return {"name": "Straight Flush", "hand": hand, "kicker": None}
+        result =  {"name": "Straight Flush", "hand": hand, "kicker": None}
 
+    # Flush
     if isFlush(suits):
-        return {"name": "Flush", "hand": hand, "kicker": None}
+        result = {"name": "Flush", "hand": hand, "kicker": None}
 
     #--------------------------------------------------
     # Hands dealing with ranks
+
+    # Straight
     if isStraight(ranks):
-        return {"name": "Straight", "hand": hand, "kicker": None}
+        result = {"name": "Straight", "hand": hand, "kicker": None}
 
+    # Four of a kind
     if isXOK(ranks, 4):
-        return {"name": "Four of a Kind", "hand": hand, "kicker": None}
+        result = {"name": "Four of a Kind", "hand": hand, "kicker": None}
 
+    # Pairs
     if hasPair(ranks):
         pairs = hasPair(ranks)
         if len(pairs) == 1:
             if isXOK(ranks, 3):
-                return {"name": "Full House", "hand": hand, "kicker": None}
+                result = {"name": "Full House", "hand": hand, "kicker": None}
             else:
-                remaining = [x for x in pairs if not x.startswith(pairs[0])]
-                return {"name": "One Pair", "hand": hand, "kicker": None, "kicker": None}
+                # remaining = [x for x in pairs if not x.startswith(pairs[0])]
+                result = {"name": "One Pair", "hand": hand, "kicker": None, "kicker": None}
         if len(pairs) == 2:
-            remaining = [x for x in pairs if not x.startswith(pairs[0]) and not x.startswith(pairs[1])]
-            return {"name": "Two Pair", "hand": hand, "kicker": None, "kicker": remaining[0]}
+            # remaining = [x for x in pairs if not x.startswith(pairs[0]) and not x.startswith(pairs[1])]
+            result = {"name": "Two Pair", "hand": hand, "kicker": None, "kicker": None}
 
+    # Three of a kind
     if isXOK(ranks, 3):
-        return {"name": "Three of a Kind", "hand": hand, "kicker": None}
+        result = {"name": "Three of a Kind", "hand": hand, "kicker": None}
 
-    return( {"name":  highCard(ranks), "hand": hand, "kicker": None} )
+    # High Card
+    if not bool(result):
+        result = {"name":  highCard(ranks), "hand": hand, "kicker": None}
+
+    message(result)
+    return result
 
 def two():
     """Determine winner between 2 5-card hands"""
@@ -209,5 +222,18 @@ def numeric(ranks):
     except:
         return False
 
+def message(result):
+    name = result["name"]
+    hand = result["hand"]
+    kicker = result["kicker"]
+
+    # Print hand
+    print("\n...You have a {}!\n".format(name), end="")
+
+    # Append kicker if present
+    if kicker is not None:
+        print("Kicker: {}".format(kicker) )
+    else:
+        print("")  # append new line return carriage
 
 main() # Call the main function
