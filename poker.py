@@ -25,7 +25,10 @@ def main():
     # Make sure hand entered has 5 cards
     hand = []  # reset hand
     while len(hand) != 5:
-        hand = json.loads( input("\nEnter your 5-card poker hand in [JSON format]: ") )
+        try:
+            hand = json.loads( input("\nEnter your 5-card poker hand in [JSON format]: ") )
+        except ValueError as e:
+            print("\n[X] Not a JSON input! Try again.")
 
     # Use function #1
     one(hand)
@@ -34,7 +37,7 @@ def main():
     # Call implementation function #2
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
     print("Let's play another round.\n")
-    print("Who will the winner be? Enter your hands...")
+    print("Who will the winner be? Enter your hands...\n")
 
     # Ask user for 2 poker hands
     for x in ["first", "second"]:
@@ -42,7 +45,10 @@ def main():
         # Make sure hand entered has 5 cards
         while len(hand) != 5:
             # Aks user for poker hand input -> convert JSON , add to list
-            hand = json.loads( input("\nEnter {} 5-card poker hand in [JSON format]: ".format(x)) )
+            try:
+                hand = json.loads( input("\nEnter {} 5-card poker hand in [JSON format]: ".format(x)) )
+            except ValueError as e:
+                print("\n[X] Not a JSON input! Try again.")
         hands.append(hand)
 
     # Use function #2
@@ -51,9 +57,15 @@ def main():
 
     # Call implementation function #3
     # Make sure hand entered has more than 5 cards
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+    print("Let's see your best hand.\n")
     hand = []  # reset hand
     while len(hand) <= 5:
-        hand = json.loads( input("Enter poker hand with more than 5 cards in [JSON format]: ") )
+        try:
+            # Aks user for poker hand input -> convert JSON , add to list
+            hand = json.loads( input("\nEnter poker hand with more than 5 cards in [JSON format]: ") )
+        except ValueError as e:
+            print("\n[X] Not a JSON input! Try again.")
 
     # Use function #3
     three(hand)
@@ -327,4 +339,5 @@ def message(result):
     else:
         print("")  # append return carriage
 
-main() # Call the main function
+if __name__ == "__main__":
+    main() # Call the main function
