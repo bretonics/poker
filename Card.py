@@ -1,7 +1,7 @@
 from Color import Color
 
 class Card(Color):
-    """docstring for Card."""
+    """Card class"""
     def __init__(self, card):
         super().__init__()
         self.card = card

@@ -1,5 +1,5 @@
 class Color:
-    """docstring for Color."""
+    """Color class for card."""
     def __init__(self):
         self.__color = ""
 
