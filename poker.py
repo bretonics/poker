@@ -83,20 +83,20 @@ def one(hand):
     # Hands deailing with suits
 
     # Royal Flush
-    if isRoyal(ranks) and isFlush(suits):
+    if isRoyal(hand) and isFlush(hand):
         print("\nWinner! Winner! Chicken Dinner!")
         result = {"name": "Royal Flush", "hand": hand, "value": None, "kicker": None}
         message(result)
         return result
 
     # Straight flush
-    if isStraight(ranks) and isFlush(suits):
+    if isStraight(hand) and isFlush(hand):
         result =  {"name": "Straight Flush", "hand": hand, "value": None, "kicker": None}
         message(result)
         return result
 
     # Flush
-    if isFlush(suits):
+    if isFlush(hand):
         result = {"name": "Flush", "hand": hand, "value": None, "kicker": None}
         message(result)
         return result
@@ -105,14 +105,14 @@ def one(hand):
     # Hands dealing with ranks
 
     # Straight
-    if isStraight(ranks):
+    if isStraight(hand):
         result = {"name": "Straight", "hand": hand, "value": None, "kicker": None}
         message(result)
         return result
 
     # Four of a kind
-    if isXOK(ranks, 4):
-        n = isXOK(ranks, 4)
+    if isXOK(hand, 4):
+        n = isXOK(hand, 4)
         # Get other cards not in pair to get kicker
         remaining = remainingCards(ranks, n[0])
         result = {"name": "Four of a Kind", "hand": hand, "value": None, "kicker": kicker(remaining)}
@@ -120,12 +120,12 @@ def one(hand):
         return result
 
     # Pairs
-    if hasPair(ranks):
-        pairs = hasPair(ranks)
+    if hasPair(hand):
+        pairs = hasPair(hand)
         if len(pairs) == 1:
 
             # Full house
-            if isXOK(ranks, 3):
+            if isXOK(hand, 3):
                 result = {"name": "Full House", "hand": hand, "value": None, "kicker": None}
                 message(result)
                 return result
@@ -147,8 +147,8 @@ def one(hand):
             return result
 
     # Three of a kind
-    if isXOK(ranks, 3):
-        n = isXOK(ranks, 3)
+    if isXOK(hand, 3):
+        n = isXOK(hand, 3)
         # Get other cards not in pair to get kicker
         remaining = remainingCards(ranks, n[0])
 
@@ -158,7 +158,7 @@ def one(hand):
 
     # High Card
     if not bool(result):
-        result = highCard(ranks)
+        result = highCard(hand)
         result["hand"] = hand
         message(result)
         return result
@@ -193,17 +193,10 @@ def two(hands):
     return winningHand
 
 
-def three(cards):
+def three(hand):
     """Return best 5-card hand"""
-    ranks = defaultdict(int)  # dictionary of rank counts
-    suits = defaultdict(int)  # dictionary of suit counts
-
-    # Create list of Card objects
-    for card in cards:
-        c = Card(card)
-        # Keep track of counts for each rank/suit observed, increment in dictionary
-        ranks[c.rank] += 1
-        suits[c.suit] += 1
+    # Get hand ranks and suits information from cards
+    cards, ranks, suits = handInfo(hand)
 
     # Keep track of all possible hands from cards passed
     hands = {}
@@ -211,30 +204,30 @@ def three(cards):
     # Test each possible hand and save results to compare from all possibilities
 
     # Royal Flush
-    if isRoyal(ranks) and isFlush(suits):
+    if isRoyal(hand) and isFlush(hand):
         result = {"name": "Royal Flush", "hand": cards, "value": None, "kicker": None}
         hands[result["name"]] = result
 
     # Straight flush
-    if isStraight(ranks) and isFlush(suits):
+    if isStraight(hand) and isFlush(hand):
         result =  {"name": "Straight Flush", "hand": cards, "value": None, "kicker": None}
         hands[result["name"]] = result
 
     # Four of a kind
-    if isXOK(ranks, 4):
-        n = isXOK(ranks, 4)
+    if isXOK(hand, 4):
+        n = isXOK(hand, 4)
         # Get other cards not in pair to get kicker
         remaining = remainingCards(ranks, n[0])
         result = {"name": "Four of a Kind", "hand": cards, "value": None, "kicker": kicker(remaining)}
         hands[result["name"]] = result
 
     # Pairs
-    if hasPair(ranks):
-        pairs = hasPair(ranks)
+    if hasPair(hand):
+        pairs = hasPair(hand)
         if len(pairs) == 1:
 
             # Full house
-            if isXOK(ranks, 3):
+            if isXOK(hand, 3):
                 result = {"name": "Full House", "hand": cards, "value": None, "kicker": None}
                 hands[result["name"]] = result
 
@@ -253,18 +246,18 @@ def three(cards):
             hands[result["name"]] = result
 
     # Flush
-    if isFlush(suits):
+    if isFlush(hand):
         result = {"name": "Flush", "hand": cards, "value": None, "kicker": None}
         hands[result["name"]] = result
 
     # Straight
-    if isStraight(ranks):
+    if isStraight(hand):
         result = {"name": "Straight", "hand": cards, "value": None, "kicker": None}
         hands[result["name"]] = result
 
     # Three of a kind
-    if isXOK(ranks, 3):
-        n = isXOK(ranks, 3)
+    if isXOK(hand, 3):
+        n = isXOK(hand, 3)
         # Get other cards not in pair to get kicker
         remaining = remainingCards(ranks, n[0])
 
@@ -272,7 +265,7 @@ def three(cards):
         hands[result["name"]] = result
 
     # High Card
-    result = highCard(ranks)
+    result = highCard(hand)
     result["hand"] = cards
     hands[result["name"]] = result
 
@@ -295,8 +288,12 @@ def three(cards):
 #--------------------------------------------------------------------------------
 # Helper functions
 
-def highCard(ranks):
+def highCard(hand):
     """Get highest card rank"""
+
+    # Get hand ranks and suits information from cards
+    cards, ranks, suits = handInfo(hand)
+
     highest = ""
     if numeric(ranks):  # Check if ranks are numbers
         r = [eval(i) for i in ranks.keys()]
@@ -314,23 +311,35 @@ def highCard(ranks):
 
     return {"name": "High Card", "value": highest, "kicker": None}
 
-def hasPair(ranks):
+def hasPair(hand):
     """Check if pairs of cards present"""
+
+    # Get hand ranks and suits information from cards
+    cards, ranks, suits = handInfo(hand)
+
     # Get list of ranks that have value of 2 (a pair)
     pairs = [k for k,v in ranks.items() if v == 2]
     # returns pairs list, lenght will determine number of pairs
+    print("Returning pairs {}".format(pairs))
     return pairs
 
-def isXOK(ranks, n):
+def isXOK(hand, n):
     """Check for n number of cards in hand"""
+
+    # Get hand ranks and suits information from cards
+    cards, ranks, suits = handInfo(hand)
+
     if n in ranks.values():
         # Return card rank that is present "n" times
         return [k for k,v in ranks.items() if v == n]
     else:
         return False
 
-def isStraight(ranks):
+def isStraight(hand):
     """Check if sequence of ranks is a straight"""
+
+    # Get hand ranks and suits information from cards
+    cards, ranks, suits = handInfo(hand)
 
     if numeric(ranks):  # Check if ranks are numbers
         r = [eval(i) for i in ranks.keys()]
@@ -358,16 +367,24 @@ def isStraight(ranks):
                     pass
             return False
 
-def isFlush(suits):
+def isFlush(hand):
     """Check if all cards are same suit"""
+
+    # Get hand ranks and suits information from cards
+    cards, ranks, suits = handInfo(hand)
+
     # Check if there are suit counts >= to 5
     if [x for x in suits.values() if x >= 5]:
         return True
     else:
         return False
 
-def isRoyal(ranks):
+def isRoyal(hand):
     """Check if royal suit of cards"""
+
+    # Get hand ranks and suits information from cards
+    cards, ranks, suits = handInfo(hand)
+
     if "A" in ranks:
         if "K" in ranks:
             if "Q" in ranks:
@@ -378,6 +395,7 @@ def isRoyal(ranks):
 
 def kicker(remaining):
     """Get kicker card rank"""
+
     highest = ""
     try:  # Check if ranks are numbers
         r = [eval(i) for i in remaining]
