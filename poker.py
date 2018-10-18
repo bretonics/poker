@@ -52,7 +52,7 @@ def main():
         hands.append(hand)
 
     # Use function #2
-    two()
+    two(hands)
 
 
     # Call implementation function #3
@@ -172,7 +172,7 @@ def one(hand):
         return result
 
 
-def two():
+def two(hands):
     """Determine winner between 2 5-card hands"""
     # Track hands dealt
     results = {}
@@ -180,35 +180,28 @@ def two():
     for hand in hands:
         # Returned result is dictionary of name:hand (key:value) pair
         result = one(hand)
+        # Handle hands that are both same type, e.g) a set of two "high card" hands
+        if result["name"] in results.keys():
+            hand = compareIdentHands(hands)
         results[result["name"]] = hand
 
     rank = 11
     winner = ""
     winningHand = ""
     # Loop through results and check rankings for value
-    for res, hand in results.items():
+    for name, hand in results.items():
         # If current hand's ranking value is less than current rank
         # set as new winner
-        if rankings[res] < rank:
-            rank = rankings[res]  # set new rank to compare against for next iter
-            winner = res
+        if rankings[name] < rank:
+            rank = rankings[name]  # set new rank to compare against for next iter
+            winner = name
             winningHand = hand
+
     print("\nWinning hand is {}: {}.\n".format(winner, winningHand))
     return winningHand
 
 
-def three(hand):
-    """Return best 5-card hand"""
 
-    # # Create list of Card objects
-    # for card in hand:
-    #     c = Card(card)
-    #     cards.append(c)
-    #     # Keep track of counts for each rank/suit observed, increment in dictionary
-    #     ranks[c.rank] += 1
-    #     suits[c.suit] += 1
-
-    one(hand)
 #--------------------------------------------------------------------------------
 # Helper functions
 
@@ -249,6 +242,38 @@ def kicker(remaining):
             highest = "A"
 
     return highest
+
+def compareIdentHands(hands):
+    """Compare identically ranked hands and return one with highest card"""
+    highest = 0
+    hand = []
+
+    # Loop every hand and card to determine which hands contains the highest rank value
+    for h in hands:
+        for card in h:
+            rank = Card(card).rank
+            # Rank value of this hand is higher than previous hand
+            # set as winning hand to return
+            try:
+                r = eval(rank)
+                if r > highest:
+                    highest = r
+                    hand = h
+            except:
+                # Get highest non-numeric card from hands
+                if highest == 0:
+                    highest = rank
+
+                if rank == "J" and highest not in ["Q", "K", "A"]:
+                    hand = h
+                if rank == "Q" and highest not in ["K", "A"]:
+                    hand = h
+                if rank == "K" and highest != "A":
+                    hand = h
+                if rank == "A":
+                    hand = h
+
+    return hand
 
 def hasPair(ranks):
     """Check if pairs of cards present"""
