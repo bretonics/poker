@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/bretonics/poker.svg?branch=master)](https://travis-ci.org/bretonics/poker)
 
-Just practical implementation. Must use `Python > 3.6`.
+Just practical implementation. Must use `Python > 3.5`.
 
 Cards are  represented by their number or first letter for the non-numeric cards (J, Q, K, A) and the suits by their first letter (H, C, D, S), stored as a JSON array.
 
