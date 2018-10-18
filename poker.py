@@ -17,42 +17,42 @@ def main():
     # Pre-define a JSON poker hand
     hand = json.loads( "[\"JH\", \"4C\", \"4S\", \"JC\", \"9H\"]" )
 
-    # # Call implementation function #1 using pre-defined hand
-    # print("\nUsing hand: {}".format(hand))
-    # one(hand)
-    #
-    # # Call implementation function #1 using hand entered from user
-    # # Make sure hand entered has 5 cards
-    # hand = []  # reset hand
-    # while len(hand) != 5:
-    #     try:
-    #         hand = json.loads( input("\nEnter your 5-card poker hand in [JSON format]: ") )
-    #     except ValueError as e:
-    #         print("\n[X] Not a JSON input! Try again.")
-    #
-    # # Use function #1
-    # one(hand)
-    #
-    #
-    # # Call implementation function #2
-    # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
-    # print("Let's play another round.\n")
-    # print("Who will the winner be? Enter your hands...\n")
-    #
-    # # Ask user for 2 poker hands
-    # for x in ["first", "second"]:
-    #     hand = []  # reset hand
-    #     # Make sure hand entered has 5 cards
-    #     while len(hand) != 5:
-    #         # Aks user for poker hand input -> convert JSON , add to list
-    #         try:
-    #             hand = json.loads( input("\nEnter {} 5-card poker hand in [JSON format]: ".format(x)) )
-    #         except ValueError as e:
-    #             print("\n[X] Not a JSON input! Try again.")
-    #     hands.append(hand)
-    #
-    # # Use function #2
-    # two(hands)
+    # Call implementation function #1 using pre-defined hand
+    print("\nUsing hand: {}".format(hand))
+    one(hand)
+
+    # Call implementation function #1 using hand entered from user
+    # Make sure hand entered has 5 cards
+    hand = []  # reset hand
+    while len(hand) != 5:
+        try:
+            hand = json.loads( input("\nEnter your 5-card poker hand in [JSON format]: ") )
+        except ValueError as e:
+            print("\n[X] Not a JSON input! Try again.")
+
+    # Use function #1
+    one(hand)
+
+
+    # Call implementation function #2
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+    print("Let's play another round.\n")
+    print("Who will the winner be? Enter your hands...\n")
+
+    # Ask user for 2 poker hands
+    for x in ["first", "second"]:
+        hand = []  # reset hand
+        # Make sure hand entered has 5 cards
+        while len(hand) != 5:
+            # Aks user for poker hand input -> convert JSON , add to list
+            try:
+                hand = json.loads( input("\nEnter {} 5-card poker hand in [JSON format]: ".format(x)) )
+            except ValueError as e:
+                print("\n[X] Not a JSON input! Try again.")
+        hands.append(hand)
+
+    # Use function #2
+    two(hands)
 
 
     # Call implementation function #3
@@ -461,7 +461,7 @@ def message(result):
     elif value is not None:
         print("Value: {}\n".format(value) )
     else:
-        print("\n")  # append return carriage
+        print("")  # append return carriage
 
 if __name__ == "__main__":
     main() # Call the main function
