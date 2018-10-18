@@ -16,7 +16,7 @@
 
 import pytest
 import json
-from poker import *
+from poker import one, two, three
 from Card import Card
 from Color import Color
 
@@ -276,7 +276,6 @@ class TestThree():
         assert three(hand) == "Four of a Kind"
 
     def test_royal_flush(self):
-        #royal flush
         hand = ["AC", "KC", "QC", "JC", "10C", "7H", "7C", "5S", "5C", "7H"]
         assert three(hand) == "Royal Flush"
 
