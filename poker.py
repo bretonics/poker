@@ -17,42 +17,42 @@ def main():
     # Pre-define a JSON poker hand
     hand = json.loads( "[\"JH\", \"4C\", \"4S\", \"JC\", \"9H\"]" )
 
-    # Call implementation function #1 using pre-defined hand
-    print("\nUsing hand: {}".format(hand))
-    one(hand)
-
-    # Call implementation function #1 using hand entered from user
-    # Make sure hand entered has 5 cards
-    hand = []  # reset hand
-    while len(hand) != 5:
-        try:
-            hand = json.loads( input("\nEnter your 5-card poker hand in [JSON format]: ") )
-        except ValueError as e:
-            print("\n[X] Not a JSON input! Try again.")
-
-    # Use function #1
-    one(hand)
-
-
-    # Call implementation function #2
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
-    print("Let's play another round.\n")
-    print("Who will the winner be? Enter your hands...\n")
-
-    # Ask user for 2 poker hands
-    for x in ["first", "second"]:
-        hand = []  # reset hand
-        # Make sure hand entered has 5 cards
-        while len(hand) != 5:
-            # Aks user for poker hand input -> convert JSON , add to list
-            try:
-                hand = json.loads( input("\nEnter {} 5-card poker hand in [JSON format]: ".format(x)) )
-            except ValueError as e:
-                print("\n[X] Not a JSON input! Try again.")
-        hands.append(hand)
-
-    # Use function #2
-    two(hands)
+    # # Call implementation function #1 using pre-defined hand
+    # print("\nUsing hand: {}".format(hand))
+    # one(hand)
+    #
+    # # Call implementation function #1 using hand entered from user
+    # # Make sure hand entered has 5 cards
+    # hand = []  # reset hand
+    # while len(hand) != 5:
+    #     try:
+    #         hand = json.loads( input("\nEnter your 5-card poker hand in [JSON format]: ") )
+    #     except ValueError as e:
+    #         print("\n[X] Not a JSON input! Try again.")
+    #
+    # # Use function #1
+    # one(hand)
+    #
+    #
+    # # Call implementation function #2
+    # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+    # print("Let's play another round.\n")
+    # print("Who will the winner be? Enter your hands...\n")
+    #
+    # # Ask user for 2 poker hands
+    # for x in ["first", "second"]:
+    #     hand = []  # reset hand
+    #     # Make sure hand entered has 5 cards
+    #     while len(hand) != 5:
+    #         # Aks user for poker hand input -> convert JSON , add to list
+    #         try:
+    #             hand = json.loads( input("\nEnter {} 5-card poker hand in [JSON format]: ".format(x)) )
+    #         except ValueError as e:
+    #             print("\n[X] Not a JSON input! Try again.")
+    #     hands.append(hand)
+    #
+    # # Use function #2
+    # two(hands)
 
 
     # Call implementation function #3
@@ -201,6 +201,104 @@ def two(hands):
     return winningHand
 
 
+def three(cards):
+    """Return best 5-card hand"""
+    ranks = defaultdict(int)  # dictionary of rank counts
+    suits = defaultdict(int)  # dictionary of suit counts
+
+    # Create list of Card objects
+    for card in cards:
+        c = Card(card)
+        # Keep track of counts for each rank/suit observed, increment in dictionary
+        ranks[c.rank] += 1
+        suits[c.suit] += 1
+
+    # Keep track of all possible hands from cards passed
+    hands = {}
+
+    # Test each possible hand and save results to compare from all possibilities
+
+    # Royal Flush
+    if isRoyal(ranks) and isFlush(suits):
+        result = {"name": "Royal Flush", "hand": cards, "value": None, "kicker": None}
+        hands[result["name"]] = result
+
+    # Straight flush
+    if isStraight(ranks) and isFlush(suits):
+        result =  {"name": "Straight Flush", "hand": cards, "value": None, "kicker": None}
+        hands[result["name"]] = result
+
+    # Four of a kind
+    if isXOK(ranks, 4):
+        n = isXOK(ranks, 4)
+        # Get other cards not in pair to get kicker
+        remaining = remainingCards(ranks, n[0])
+        result = {"name": "Four of a Kind", "hand": cards, "value": None, "kicker": kicker(remaining)}
+        hands[result["name"]] = result
+
+    # Pairs
+    if hasPair(ranks):
+        pairs = hasPair(ranks)
+        if len(pairs) == 1:
+
+            # Full house
+            if isXOK(ranks, 3):
+                result = {"name": "Full House", "hand": cards, "value": None, "kicker": None}
+                hands[result["name"]] = result
+
+            # One pair
+            else:
+                # Get other cards not in pair to get kicker
+                remaining = remainingCards(ranks, pairs[0])
+                result = {"name": "One Pair", "hand": cards, "value": None, "kicker": kicker(remaining)}
+                hands[result["name"]] = result
+
+        # Two pair
+        if len(pairs) == 2:
+            # Get other cards not in pair to get kicker
+            remaining = remainingCards(ranks, pairs[1])
+            result = {"name": "Two Pair", "hand": cards, "value": None, "kicker": remaining[0]}
+            hands[result["name"]] = result
+
+    # Flush
+    if isFlush(suits):
+        result = {"name": "Flush", "hand": cards, "value": None, "kicker": None}
+        hands[result["name"]] = result
+
+    # Straight
+    if isStraight(ranks):
+        result = {"name": "Straight", "hand": cards, "value": None, "kicker": None}
+        hands[result["name"]] = result
+
+    # Three of a kind
+    if isXOK(ranks, 3):
+        n = isXOK(ranks, 3)
+        # Get other cards not in pair to get kicker
+        remaining = remainingCards(ranks, n[0])
+
+        result = {"name": "Three of a Kind", "hand": cards, "value": None, "kicker": kicker(remaining)}
+        hands[result["name"]] = result
+
+    # High Card
+    result = highCard(ranks)
+    result["hand"] = cards
+    hands[result["name"]] = result
+
+    # Return highest hand
+    # Iterate through results of all possible hands in set of cards
+    best = 11
+    winner = ""
+    value = ""
+    for item, val in hands.items():
+        score = rankings[item]
+        # Store best set of cards according to ranking
+        if score < best:
+            best = score
+            winner = item
+            value = val
+
+    message(value)
+    return(winner)
 
 #--------------------------------------------------------------------------------
 # Helper functions
@@ -321,7 +419,8 @@ def isStraight(ranks):
 
 def isFlush(suits):
     """Check if all cards are same suit"""
-    if 5 in suits.values():
+    # Check if there are suit counts >= to 5
+    if [x for x in suits.values() if x >= 5]:
         return True
     else:
         return False
@@ -358,11 +457,11 @@ def message(result):
 
     # Append kicker if present
     if kicker is not None:
-        print("Kicker: {}".format(kicker) )
+        print("Kicker: {}\n".format(kicker) )
     elif value is not None:
-        print("Value: {}".format(value) )
+        print("Value: {}\n".format(value) )
     else:
-        print("")  # append return carriage
+        print("\n")  # append return carriage
 
 if __name__ == "__main__":
     main() # Call the main function
