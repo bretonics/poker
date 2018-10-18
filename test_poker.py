@@ -101,13 +101,13 @@ class TestOne():
 
     def test_royal_flush(self):
         print("\tTESTING royal flush...")
-        
+
         hand = json.loads( '["AC", "KC", "QC", "JC", "10C"]' )
         assert one(hand) == {'name': 'Royal Flush', 'hand': ['AC', 'KC', 'QC', 'JC', '10C'], 'value': None, 'kicker': None}
 
     def test_straight_flush(self):
         print("\tTESTING straight flush...")
-        
+
         hand = json.loads( '["8C", "7C", "6C", "5C", "4C"]' )
         assert one(hand) == {'name': 'Straight Flush', 'hand': ['8C', '7C', '6C', '5C', '4C'], 'value': None, 'kicker': None}
 
@@ -116,7 +116,7 @@ class TestOne():
 
     def test_four_of_kind(self):
         print("\tTESTING four of a kind...")
-        
+
         hand = json.loads( '["7H", "7C", "7S", "5C", "7H"]' )
         assert one(hand) == {'name': 'Four of a Kind', 'hand': ['7H', '7C', '7S', '5C', '7H'], 'value': None, 'kicker': 5}
 
@@ -125,13 +125,13 @@ class TestOne():
 
     def test_full_house(self):
         print("\tTESTING full house...")
-        
+
         hand = json.loads( '["7H", "7C", "5S", "5C", "7H"]' )
         assert one(hand) == {'name': 'Full House', 'hand': ['7H', '7C', '5S', '5C', '7H'], 'value': None, 'kicker': None}
 
     def test_flush(self):
         print("\tTESTING flush...")
-        
+
         hand = json.loads( '["9C", "7C", "5C", "6C", "10C"]' )
         assert one(hand) == {'name': 'Flush', 'hand': ['9C', '7C', '5C', '6C', '10C'], 'value': None, 'kicker': None}
 
@@ -147,31 +147,31 @@ class TestOne():
     @pytest.mark.xfail(reason="known failure of numeric and non-numeric straights")
     def test_mixed_straight(self):
         print("\tTESTING mixed numeric and non-numeric straight...")
-        
+
         hand = json.loads( '["KH", "QD", "JC", "10C", "9C"]' )
         assert one(hand) == {'name': 'Straight', 'hand': ['KH', 'QD', 'JC', '10C', '9C'], 'value': None, 'kicker': None}
 
     def test_three_of_kind(self):
         print("\tTESTING three fo a kind...")
-        
+
         hand = json.loads( '["7H", "7C", "5S", "JC", "7H"]' )
         assert one(hand) == {'name': 'Three of a Kind', 'hand': ['7H', '7C', '5S', 'JC', '7H'], 'value': None, 'kicker': 'J'}
 
     def test_two_pair(self):
         print("\tTESTING two pair...")
-        
+
         hand = json.loads( '["JH", "4C", "4S", "JC", "9H"]' )
         assert one(hand) == {'name': 'Two Pair', 'hand': ['JH', '4C', '4S', 'JC', '9H'], 'value': None, 'kicker': 'J'}
 
     def test_one_pair(self):
         print("\tTESTING one pair...")
-        
+
         hand = json.loads( '["JH", "4C", "5S", "JC", "9H"]' )
         assert one(hand) == {'name': 'One Pair', 'hand': ['JH', '4C', '5S', 'JC', '9H'], 'value': None, 'kicker': 9}
 
     def test_highest(self):
         print("\tTESTING highest card...")
-        
+
         hand = json.loads( '["JH", "4C", "5S", "KC", "9H"]' )
         assert one(hand) == {'name': 'High Card', 'hand': ['JH', '4C', '5S', 'KC', '9H'], 'value': 'K', 'kicker': None}
 
@@ -181,83 +181,107 @@ class TestOne():
 
 class TestTwo():
     print("\tTESTING function #2...")
-    
+
 
     def test_royalflsuh_vs_straight(self):
         print("\tTESTING royal flush vs straight...")
-        
+
         hands = [ ["AC", "KC", "QC", "JC", "10C"], ["AH", "KH", "QD", "JC", "10C"] ]
         assert two(hands) == ["AC", "KC", "QC", "JC", "10C"]
 
     def test_royalflush_vs_straightflush(self):
         print("\tTESTING royal flush vs straight flush...")
-        
+
         hands = [ ["AC", "KC", "QC", "JC", "10C"], ["8C", "7C", "6C", "5C", "4C"] ]
         assert two(hands) == ["AC", "KC", "QC", "JC", "10C"]
 
     def test_straigh_vs_straighflush(self):
-        print("\tTESTING  vs ...")
-        
+        print("\tTESTING straight vs straight flush...")
+
         hands = [ ["7H", "5H", "6C", "8C", "4C"] , ["7S", "5S", "6S", "8S", "4S"]  ]
         assert two(hands) == ["7S", "5S", "6S", "8S", "4S"]
 
     def test_fullhouse_vs_fok(self):
         print("\tTESTING full house vs four of a kind...")
-        
+
         hands = [ ["7H", "7C", "5S", "5C", "7H"], ["KH", "KC", "KS", "5C", "KH"] ]
         assert two(hands) == ["KH", "KC", "KS", "5C", "KH"]
 
     def test_fof_vs_twopair(self):
         print("\tTESTING four of a kind vs two pair...")
-        
+
         hands = [ ["KH", "KC", "KS", "5C", "KH"], ["JH", "4C", "4S", "JC", "9H"] ]
         assert two(hands) == ["KH", "KC", "KS", "5C", "KH"]
 
     def test_tof_vs_twopair(self):
-        print("\tTESTING thre of a kind vs one pair...")
-        
+        print("\tTESTING three of a kind vs one pair...")
+
         hands = [ ["7H", "7C", "5S", "JC", "7H"], ["JH", "4C", "7S", "JC", "9H"] ]
         assert two(hands) == ["7H", "7C", "5S", "JC", "7H"]
 
     def test_twopair_vs_onepair(self):
         print("\tTESTING two pair vs one pair...")
-        
+
         hands = [ ["JH", "4C", "5S", "JC", "9H"], ["JH", "4C", "4S", "JC", "9H"] ]
         assert two(hands) == ["JH", "4C", "4S", "JC", "9H"]
 
     def test_onepair_vs_highest(self):
         print("\tTESTING one pair vs highest card...")
-        
+
         hands = [ ["JH", "4C", "5S", "JC", "9H"], ["JH", "4C", "5S", "KC", "9H"] ]
         assert two(hands) == ["JH", "4C", "5S", "JC", "9H"]
 
     def test_high_vs_high_numeric(self):
         print("\tTESTING high vs high numeric...")
-        
+
         hands = [ ["10H", "4C", "5S", "KC", "9H"], ["9H", "4C", "5S", "8C", "3S"] ]
         assert two(hands) == ["10H", "4C", "5S", "KC", "9H"]
 
     def test_high_vs_high_non_numeric(self):
         print("\tTESTING high vs high non-numeric...")
-        
+
         hands = [ ["JH", "4C", "5S", "KC", "9H"] ,  ["AH", "4C", "5S", "8C", "9S"] ]
         assert two(hands) == ["AH", "4C", "5S", "8C", "9S"]
 
     def test_high_vs_high_mixed(self):
         print("\tTESTING high vs high mix...")
-        
+
         hands = [ ["10H", "4C", "5S", "KC", "9H"] ,  ["AH", "4C", "5S", "8C", "10S"] ]
         assert two(hands) == ["AH", "4C", "5S", "8C", "10S"]
+
+    def test_three_hands(self):
+        print("\tTESTING three hands: three of a kind, one pair, high card...")
+
+        hands = [ ["7H", "7C", "5S", "JC", "7H"], ["JH", "4C", "7S", "JC", "9H"], ["10H", "4C", "5S", "KC", "9H"] ]
+        assert two(hands) == ["7H", "7C", "5S", "JC", "7H"]
+
+    def test_fullhouse_vs_fok_vs_flush(self):
+        print("\tTESTING full house vs four of a kind vs flush...")
+
+        hands = [ ["7H", "7C", "5S", "5C", "7H"], ["KH", "KC", "KS", "5C", "KH"], ["9C", "7C", "5C", "6C", "10C"]  ]
+        assert two(hands) == ["KH", "KC", "KS", "5C", "KH"]
+
+    def test_other_three_hands(self):
+        print("\tTESTING high vs two pair vs straight flush...")
+
+        hands = [ ["10H", "4C", "5S", "KC", "9H"] ,  ["JH", "4C", "4S", "JC", "9H"], ["7S", "5S", "6S", "8S", "4S"] ]
+        assert two(hands) == ["7S", "5S", "6S", "8S", "4S"]
 
 
 class TestThree():
     print("\tTESTING function #2...")
 
     def test_(self):
+        #four of a Kind
+        # ["7H", "7C", "5S", "5C", "7H", "9C", "7C", "5C", "6C", "10C"]
         pass
 
     def test_(self):
         pass
+        #royal flush
+        # ["AC", "KC", "QC", "JC", "10C", "7H", "7C", "5S", "5C", "7H"]
 
     def test_(self):
         pass
+        #full house
+        # ["JH", "4C", "4S", "JC", "9H", "7H", "7C", "5S", "JC", "7H"]
