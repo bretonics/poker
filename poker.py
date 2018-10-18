@@ -71,95 +71,149 @@ def main():
     three(hand)
 
 #--------------------------------------------------------------------------------
-# implementation Functions
+# Implementation Functions
+
 def one(hand):
     """First implementation where category of 5-card is determined"""
-    result = {}   # dictionary for hand result
+    # Dictionary object for resulting hand
+    result = {}
 
     # Get hand ranks and suits information from cards
     cards, ranks, suits = handInfo(hand)
 
-    #--------------------------------------------------
-    # Hands deailing with suits
+    #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # Hands dealing with suits
+    royal = isRoyal(hand)
+    fok = isXOK(hand, 4)
+    flush = isFlush(hand)
+
+    #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # Hands dealing with ranks
+    straight = isStraight(hand)
+    tok = isXOK(hand, 3)
+    pair = hasPair(hand)
+
+    #--------------------------------------------------------------------------------
+    # Check what kind of hand was passed
 
     # Royal Flush
-    if isRoyal(hand) and isFlush(hand):
+    if royal and flush:
         print("\nWinner! Winner! Chicken Dinner!")
-        result = {"name": "Royal Flush", "hand": hand, "value": None, "kicker": None}
+        # Construct royal flush result
+        result = {**royal, **flush}
+        result["name"] = "Royal Flush"
+        result["hand"] = hand
+        # Print message and return dictionary object of hand
         message(result)
         return result
 
     # Straight flush
-    if isStraight(hand) and isFlush(hand):
-        result =  {"name": "Straight Flush", "hand": hand, "value": None, "kicker": None}
+    if straight and flush:
+        # Construct straight flush result
+        result = {**straight, **flush}
+        result["name"] = "Straight Flush"
+        result["hand"] = hand
+        # Print message and return dictionary object of hand
         message(result)
         return result
 
     # Flush
-    if isFlush(hand):
-        result = {"name": "Flush", "hand": hand, "value": None, "kicker": None}
+    if flush:
+        # Construct flush result
+        result = flush
+        result["name"] = "Flush"
+        result["hand"] = hand
+        # Print message and return dictionary object of hand
         message(result)
         return result
 
-    #--------------------------------------------------
-    # Hands dealing with ranks
-
     # Straight
-    if isStraight(hand):
-        result = {"name": "Straight", "hand": hand, "value": None, "kicker": None}
+    if straight:
+        # Construct straight result
+        result = straight
+        result["name"] = "Straight"
+        result["hand"] = hand
+        # Print message and return dictionary object of hand
         message(result)
         return result
 
     # Four of a kind
-    if isXOK(hand, 4):
-        n = isXOK(hand, 4)
+    if fok:
+        # Construct four of a kind result
+        result = fok[0]
+        result["name"] = "Four of a Kind"
+        result["hand"] = hand
         # Get other cards not in pair to get kicker
-        remaining = remainingCards(ranks, n[0])
-        result = {"name": "Four of a Kind", "hand": hand, "value": None, "kicker": kicker(remaining)}
+        remaining = remainingCards(ranks, fok[1][0])
+        result["kicker"] = kicker(remaining)
+        # Print message and return dictionary object of hand
         message(result)
         return result
 
     # Pairs
-    if hasPair(hand):
-        pairs = hasPair(hand)
+    if pair:
+        pairs = pair[1]  # list of ranks that are pairs
+
         if len(pairs) == 1:
 
-            # Full house
-            if isXOK(hand, 3):
-                result = {"name": "Full House", "hand": hand, "value": None, "kicker": None}
+            # Full house (three of a kind + one pair)
+            if tok:
+                # Construct full house result
+                result = {**tok[0], **pair[0]}
+                result["name"] = "Full House"
+                result["hand"] = hand
+                # Print message and return dictionary object of hand
                 message(result)
                 return result
 
             # One pair
             else:
+                # Construct one pair result
+                result = pair[0]
+                result["name"] = "One Pair"
+                result["hand"] = hand
                 # Get other cards not in pair to get kicker
                 remaining = remainingCards(ranks, pairs[0])
-                result = {"name": "One Pair", "hand": hand, "value": None, "kicker": kicker(remaining)}
+                result["kicker"] = kicker(remaining)
+                # Print message and return dictionary object of hand
                 message(result)
                 return result
 
         # Two pair
         if len(pairs) == 2:
+            # Construct two pair result
+            result = pair[0]
+            result["name"] = "Two Pair"
+            result["hand"] = hand
+
             # Get other cards not in pair to get kicker
             remaining = remainingCards(ranks, pairs[1])
-            result = {"name": "Two Pair", "hand": hand, "value": None, "kicker": remaining[0]}
+            result["kicker"] = kicker(remaining)
+
+            # Print message and return dictionary object of hand
             message(result)
             return result
 
     # Three of a kind
-    if isXOK(hand, 3):
-        n = isXOK(hand, 3)
+    if tok:
+        # Construct three of a kind result
+        result = tok[0]
+        result["name"] = "Three of a Kind"
+        result["hand"] = hand
         # Get other cards not in pair to get kicker
-        remaining = remainingCards(ranks, n[0])
-
-        result = {"name": "Three of a Kind", "hand": hand, "value": None, "kicker": kicker(remaining)}
+        remaining = remainingCards(ranks, tok[1][0])
+        result["kicker"] = kicker(remaining)
+        # Print message and return dictionary object of hand
         message(result)
         return result
 
     # High Card
     if not bool(result):
+        # Construct high card result
         result = highCard(hand)
         result["hand"] = hand
+
+        # Print message and return dictionary object of hand
         message(result)
         return result
 
@@ -201,75 +255,128 @@ def three(hand):
     # Keep track of all possible hands from cards passed
     hands = {}
 
+    #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # Hands deailing with suits
+    royal = isRoyal(hand)
+    fok = isXOK(hand, 4)
+    flush = isFlush(hand)
+
+    #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # Hands dealing with ranks
+    straight = isStraight(hand)
+    tok = isXOK(hand, 3)
+    pair = hasPair(hand)
+
+    #--------------------------------------------------------------------------------
     # Test each possible hand and save results to compare from all possibilities
 
     # Royal Flush
-    if isRoyal(hand) and isFlush(hand):
-        result = {"name": "Royal Flush", "hand": cards, "value": None, "kicker": None}
+    if royal and flush:
+        # Construct royal flush result
+        result = {**royal, **flush}
+        result["name"] = "Royal Flush"
+        result["hand"] = hand
+        # Add result to dictionary as a possible hand
         hands[result["name"]] = result
 
     # Straight flush
-    if isStraight(hand) and isFlush(hand):
-        result =  {"name": "Straight Flush", "hand": cards, "value": None, "kicker": None}
+    if straight and flush:
+        # Construct straight flush result
+        result = {**straight, **flush}
+        result["name"] = "Straight Flush"
+        result["hand"] = hand
+        # Add result to dictionary as a possible hand
         hands[result["name"]] = result
 
     # Four of a kind
-    if isXOK(hand, 4):
-        n = isXOK(hand, 4)
+    if fok:
+        result = fok[0]
+        result["name"] = "Four of a Kind"
         # Get other cards not in pair to get kicker
-        remaining = remainingCards(ranks, n[0])
-        result = {"name": "Four of a Kind", "hand": cards, "value": None, "kicker": kicker(remaining)}
+        remaining = remainingCards(ranks, fok[1][0])
+        result["hand"] = hand
+        result["kicker"] = kicker(remaining)
+        # Add result to dictionary as a possible hand
         hands[result["name"]] = result
 
     # Pairs
-    if hasPair(hand):
-        pairs = hasPair(hand)
+    if pair:
+        pairs = pair[1]  # list of ranks that are pairs
+
         if len(pairs) == 1:
 
-            # Full house
-            if isXOK(hand, 3):
-                result = {"name": "Full House", "hand": cards, "value": None, "kicker": None}
+            # Full house (three of a kind + one pair)
+            if tok:
+                # Construct full house result
+                result = {**tok[0], **pair[0]}
+                result["name"] = "Full House"
+                result["hand"] = hand
+                # Add result to dictionary as a possible hand
                 hands[result["name"]] = result
 
             # One pair
             else:
+                # Construct one pair result
+                result = pair[0]
+                result["name"] = "One Pair"
+                result["hand"] = hand
                 # Get other cards not in pair to get kicker
                 remaining = remainingCards(ranks, pairs[0])
-                result = {"name": "One Pair", "hand": cards, "value": None, "kicker": kicker(remaining)}
+                result["kicker"] = kicker(remaining)
+                # Add result to dictionary as a possible hand
                 hands[result["name"]] = result
 
         # Two pair
         if len(pairs) == 2:
+            # Construct two pair result
+            result = pair[0]
+            result["name"] = "Two Pair"
+            result["hand"] = hand
             # Get other cards not in pair to get kicker
             remaining = remainingCards(ranks, pairs[1])
-            result = {"name": "Two Pair", "hand": cards, "value": None, "kicker": remaining[0]}
+            result["kicker"] = kicker(remaining)
+            # Add result to dictionary as a possible hand
             hands[result["name"]] = result
 
     # Flush
-    if isFlush(hand):
-        result = {"name": "Flush", "hand": cards, "value": None, "kicker": None}
+    if flush:
+        # Construct flush result
+        result = flush
+        result["name"] = "Flush"
+        result["hand"] = hand
+        # Add result to dictionary as a possible hand
         hands[result["name"]] = result
 
     # Straight
-    if isStraight(hand):
-        result = {"name": "Straight", "hand": cards, "value": None, "kicker": None}
+    if straight:
+        # Construct dictionary result
+        result = straight
+        result["name"] = "Straight"
+        result["hand"] = hand
+        # Add result to dictionary as a possible hand
         hands[result["name"]] = result
 
     # Three of a kind
-    if isXOK(hand, 3):
-        n = isXOK(hand, 3)
+    if tok:
+        # Construct dictionary result
+        result = tok[0]
+        result["name"] = "Three of a Kind"
+        result["hand"] = hand
         # Get other cards not in pair to get kicker
-        remaining = remainingCards(ranks, n[0])
-
-        result = {"name": "Three of a Kind", "hand": cards, "value": None, "kicker": kicker(remaining)}
+        remaining = remainingCards(ranks, tok[1][0])
+        result["kicker"] = kicker(remaining)
+        # Add result to dictionary as a possible hand
         hands[result["name"]] = result
 
     # High Card
     result = highCard(hand)
-    result["hand"] = cards
+    result["hand"] = hand
+    # Add result to dictionary as a possible hand
     hands[result["name"]] = result
 
+    #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # Return highest hand
+
     # Iterate through results of all possible hands in set of cards
     best = 11
     winner = ""
@@ -282,7 +389,7 @@ def three(hand):
             winner = item
             value = val
 
-    message(value)
+    print("Best possible hand ia a {}: {}".format(winner, value))
     return(winner)
 
 #--------------------------------------------------------------------------------
@@ -320,8 +427,8 @@ def hasPair(hand):
     # Get list of ranks that have value of 2 (a pair)
     pairs = [k for k,v in ranks.items() if v == 2]
     # returns pairs list, lenght will determine number of pairs
-    print("Returning pairs {}".format(pairs))
-    return pairs
+
+    return {"value": None, "kicker": None}, pairs
 
 def isXOK(hand, n):
     """Check for n number of cards in hand"""
@@ -331,7 +438,8 @@ def isXOK(hand, n):
 
     if n in ranks.values():
         # Return card rank that is present "n" times
-        return [k for k,v in ranks.items() if v == n]
+        kind = [k for k,v in ranks.items() if v == n]
+        return {"value": None}, kind
     else:
         return False
 
@@ -354,10 +462,10 @@ def isStraight(hand):
                 m += 1
             else:
                 return False
-        return True
+        return {"value": None, "kicker": None}
     else:  # Rank is non-numeric cards (J, Q, K, A) or contains mix numeric/non-numeric
-    # TODO: check edge cases of numeric and non-numeric straights
-        if isRoyal(ranks):  # Straight is royal
+    #### TODO: check edge cases of numeric and non-numeric straights
+        if isRoyal(ranks):  # Straight contains non-numeric card(s)
             return True
         else:  # Check if straight has both numeric and non-numeric
             if "10" in ranks:
@@ -375,7 +483,7 @@ def isFlush(hand):
 
     # Check if there are suit counts >= to 5
     if [x for x in suits.values() if x >= 5]:
-        return True
+        return {"name": "Flush", "value": None, "kicker": None}
     else:
         return False
 
@@ -390,7 +498,7 @@ def isRoyal(hand):
             if "Q" in ranks:
                 if "J" in ranks:
                     if "10" in ranks:
-                        return True
+                        return {"name": "Royal", "value": None, "kicker": None}
 
 
 def kicker(remaining):
