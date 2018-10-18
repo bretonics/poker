@@ -271,17 +271,15 @@ class TestTwo():
 class TestThree():
     print("\tTESTING function #2...")
 
-    def test_(self):
-        #four of a Kind
-        # ["7H", "7C", "5S", "5C", "7H", "9C", "7C", "5C", "6C", "10C"]
-        pass
+    def test_fok(self):
+        hand = ["7H", "7C", "5S", "5C", "7H", "9C", "7C", "5C", "6C", "10C"]
+        assert three(hand) == "Four of a Kind"
 
-    def test_(self):
-        pass
+    def test_royal_flush(self):
         #royal flush
-        # ["AC", "KC", "QC", "JC", "10C", "7H", "7C", "5S", "5C", "7H"]
+        hand = ["AC", "KC", "QC", "JC", "10C", "7H", "7C", "5S", "5C", "7H"]
+        assert three(hand) == "Royal Flush"
 
-    def test_(self):
-        pass
-        #full house
-        # ["JH", "4C", "4S", "JC", "9H", "7H", "7C", "5S", "JC", "7H"]
+    def test_full_house(self):
+        hand = ["JH", "4C", "4S", "JC", "9H", "7H", "7C", "5S", "JC", "7H"]
+        assert three(hand) == "Full House"
