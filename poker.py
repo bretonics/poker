@@ -75,180 +75,6 @@ def main():
 
 def one(hand):
     """First implementation where category of 5-card is determined"""
-    # Dictionary object for resulting hand
-    result = {}
-
-    # Get hand ranks and suits information from cards
-    cards, ranks, suits = handInfo(hand)
-
-    #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    # Hands dealing with suits
-    royal = isRoyal(hand)
-    fok = isXOK(hand, 4)
-    flush = isFlush(hand)
-
-    #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    # Hands dealing with ranks
-    straight = isStraight(hand)
-    tok = isXOK(hand, 3)
-    pair = hasPair(hand)
-
-    #--------------------------------------------------------------------------------
-    # Check what kind of hand was passed
-
-    # Royal Flush
-    if royal and flush:
-        print("\nWinner! Winner! Chicken Dinner!")
-        # Construct royal flush result
-        result = {**royal, **flush}
-        result["name"] = "Royal Flush"
-        result["hand"] = hand
-        # Print message and return dictionary object of hand
-        message(result)
-        return result
-
-    # Straight flush
-    if straight and flush:
-        # Construct straight flush result
-        result = {**straight, **flush}
-        result["name"] = "Straight Flush"
-        result["hand"] = hand
-        # Print message and return dictionary object of hand
-        message(result)
-        return result
-
-    # Flush
-    if flush:
-        # Construct flush result
-        result = flush
-        result["name"] = "Flush"
-        result["hand"] = hand
-        # Print message and return dictionary object of hand
-        message(result)
-        return result
-
-    # Straight
-    if straight:
-        # Construct straight result
-        result = straight
-        result["name"] = "Straight"
-        result["hand"] = hand
-        # Print message and return dictionary object of hand
-        message(result)
-        return result
-
-    # Four of a kind
-    if fok:
-        # Construct four of a kind result
-        result = fok[0]
-        result["name"] = "Four of a Kind"
-        result["hand"] = hand
-        # Get other cards not in pair to get kicker
-        remaining = remainingCards(ranks, fok[1][0])
-        result["kicker"] = kicker(remaining)
-        # Print message and return dictionary object of hand
-        message(result)
-        return result
-
-    # Pairs
-    if pair:
-        pairs = pair[1]  # list of ranks that are pairs
-
-        if len(pairs) == 1:
-
-            # Full house (three of a kind + one pair)
-            if tok:
-                # Construct full house result
-                result = {**tok[0], **pair[0]}
-                result["name"] = "Full House"
-                result["hand"] = hand
-                # Print message and return dictionary object of hand
-                message(result)
-                return result
-
-            # One pair
-            else:
-                # Construct one pair result
-                result = pair[0]
-                result["name"] = "One Pair"
-                result["hand"] = hand
-                # Get other cards not in pair to get kicker
-                remaining = remainingCards(ranks, pairs[0])
-                result["kicker"] = kicker(remaining)
-                # Print message and return dictionary object of hand
-                message(result)
-                return result
-
-        # Two pair
-        if len(pairs) == 2:
-            # Construct two pair result
-            result = pair[0]
-            result["name"] = "Two Pair"
-            result["hand"] = hand
-
-            # Get other cards not in pair to get kicker
-            remaining = remainingCards(ranks, pairs[1])
-            result["kicker"] = kicker(remaining)
-
-            # Print message and return dictionary object of hand
-            message(result)
-            return result
-
-    # Three of a kind
-    if tok:
-        # Construct three of a kind result
-        result = tok[0]
-        result["name"] = "Three of a Kind"
-        result["hand"] = hand
-        # Get other cards not in pair to get kicker
-        remaining = remainingCards(ranks, tok[1][0])
-        result["kicker"] = kicker(remaining)
-        # Print message and return dictionary object of hand
-        message(result)
-        return result
-
-    # High Card
-    if not bool(result):
-        # Construct high card result
-        result = highCard(hand)
-        result["hand"] = hand
-
-        # Print message and return dictionary object of hand
-        message(result)
-        return result
-
-
-def two(hands):
-    """Determine winner between 2 5-card hands"""
-    # Track hands dealt
-    results = {}
-    # Check each hand dealt (passed)
-    for hand in hands:
-        # Returned result is dictionary of name:hand (key:value) pair
-        result = one(hand)
-        # Handle hands that are both same type, e.g) a set of two "high card" hands
-        if result["name"] in results.keys():
-            hand = compareIdentHands(hands)
-        results[result["name"]] = hand
-
-    rank = 11
-    winner = ""
-    winningHand = ""
-    # Loop through results and check rankings for value
-    for name, hand in results.items():
-        # If current hand's ranking value is less than current rank
-        # set as new winner
-        if rankings[name] < rank:
-            rank = rankings[name]  # set new rank to compare against for next iter
-            winner = name
-            winningHand = hand
-
-    print("\nWinning hand is {}: {}.\n".format(winner, winningHand))
-    return winningHand
-
-
-def three(hand):
-    """Return best 5-card hand"""
     # Get hand ranks and suits information from cards
     cards, ranks, suits = handInfo(hand)
 
@@ -385,12 +211,47 @@ def three(hand):
         score = rankings[item]
         # Store best set of cards according to ranking
         if score < best:
-            best = score
-            winner = item
-            value = val
+            best = score  # current best score
+            winner = item  # current name of winning hand
+            value = val  # current winning hand object (dictionary)
 
-    print("Best possible hand ia a {}: {}".format(winner, value))
-    return(winner)
+    print("\nYou have a {}: {}\n".format(winner, value["hand"]))
+    return(value)
+
+def two(hands):
+    """Determine winner between 2 5-card hands"""
+    # Track hands dealt
+    results = {}
+    # Check each hand dealt (passed)
+    for hand in hands:
+        # Returned result is dictionary of name:hand (key:value) pair
+        result = one(hand)
+        # Handle hands that are both same type, e.g) a set of two "high card" hands
+        if result["name"] in results.keys():
+            hand = compareIdentHands(hands)
+        results[result["name"]] = hand
+
+    rank = 11
+    winner = ""
+    winningHand = ""
+    # Loop through results and check rankings for value
+    for name, hand in results.items():
+        # If current hand's ranking value is less than current rank
+        # set as new winner
+        if rankings[name] < rank:
+            rank = rankings[name]  # set new rank to compare against for next iter
+            winner = name
+            winningHand = hand
+
+    print("\nWinning hand is {}: {}\n".format(winner, winningHand))
+    return winningHand
+
+
+def three(hand):
+    """Return best 5-card hand"""
+    print("\nLet's see your best possible hand...")
+    hand = one(hand)
+    return(hand["name"])
 
 #--------------------------------------------------------------------------------
 # Helper functions
